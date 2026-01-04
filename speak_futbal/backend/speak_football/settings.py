@@ -186,9 +186,10 @@ CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 # CSRF settings
 CSRF_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_HTTPONLY = False  # Set to False to allow JavaScript to read the cookie
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",  # Next.js development server
-]
+# CSRF_TRUSTED_ORIGINS = [
+#     "http://localhost:3000",  # Next.js development server
+# ]
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_NAME = 'csrftoken'
 
