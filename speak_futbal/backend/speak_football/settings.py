@@ -184,6 +184,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 
 # CSRF settings
+CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_HTTPONLY = False  # Set to False to allow JavaScript to read the cookie
 # CSRF_TRUSTED_ORIGINS = [
@@ -194,9 +195,9 @@ CSRF_USE_SESSIONS = False
 CSRF_COOKIE_NAME = 'csrftoken'
 
 # Session settings
+SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SECURE = True
 
 # REST Framework settings
 REST_FRAMEWORK = {
