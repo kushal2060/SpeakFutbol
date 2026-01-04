@@ -71,7 +71,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
     setIsLoading(true);
     try {
       // Send token to Django backend
-      const response = await fetch('http://localhost:8000/api/auth/google/', {
+      const response = await fetch('http://localhost:8000/api/users/google-login/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -79,15 +79,18 @@ const SignInModal: React.FC<SignInModalProps> = ({
         }),
       });
       
-      const data = await response.json();
-      if (data.key) {
-        // Save token and close modal
-        localStorage.setItem('authToken', data.key);
-        onSignupSuccess?.(data);
-        onClose();
-      } else {
-        setError("Authentication failed");
+        if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.error || 'Authentication failed');
+        return;
       }
+
+      const userData = await response.json();
+      console.log('Google signup successful:', userData);
+
+      // Call parent with user data (session cookies handle auth)
+      onSignupSuccess?.(userData);
+      onClose();
     } catch (err) {
       console.log(err);
       setError("Failed to authenticate with Google");
@@ -152,10 +155,10 @@ const SignInModal: React.FC<SignInModalProps> = ({
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
               {isLoading ? "Signing in..." : "Continue with Google"}
             </button>
-            <button className="flex items-center justify-center gap-2 border border-gray-300 rounded py-2 font-semibold text-black hover:bg-gray-50 transition">
+            {/* <button className="flex items-center justify-center gap-2 border border-gray-300 rounded py-2 font-semibold text-black hover:bg-gray-50 transition">
               <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook" className="w-5 h-5" />
               Continue with Facebook
-            </button>
+            </button> */}
           </div>
           {/* OR Divider */}
           <div className="flex items-center w-full mb-4">

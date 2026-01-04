@@ -24,8 +24,8 @@ const poppins = Poppins({
 
 // Metadata
 export const metadata: Metadata = {
-  title: "Your App Title",
-  description: "Your App Description",
+  title: "SpeakFutbol",
+  description: "Get latest football event updates in your area",
 };
 
 // RootLayout Component

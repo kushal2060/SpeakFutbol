@@ -135,10 +135,10 @@ const LogInModal: React.FC<LogInModalProps> = ({
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
               {isLoading ? "Signing in..." : "Continue with Google"}
             </button>
-            <button className="flex items-center justify-center gap-2 border border-gray-300 rounded py-2 font-semibold text-black hover:bg-gray-50 transition">
+            {/* <button className="flex items-center justify-center gap-2 border border-gray-300 rounded py-2 font-semibold text-black hover:bg-gray-50 transition">
               <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook" className="w-5 h-5" />
               Continue with Facebook
-            </button>
+            </button> */}
           </div>
           {/* OR Divider */}
           <div className="flex items-center w-full mb-4">
