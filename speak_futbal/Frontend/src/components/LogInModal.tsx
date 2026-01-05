@@ -51,7 +51,7 @@ const LogInModal: React.FC<LogInModalProps> = ({
   setIsLoading(true);
   try {
     // Send token to Django backend with credentials to receive session cookie
-    const response = await fetch('http://localhost:8000/api/users/google-login/', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/users/google-login/`, {
       method: 'POST',
       credentials: 'include', // Important: include cookies
       headers: { 'Content-Type': 'application/json' },
@@ -68,7 +68,9 @@ const LogInModal: React.FC<LogInModalProps> = ({
     
     const userData = await response.json();
     console.log('Google login successful:', userData);
-    
+      if (userData.token) {
+    localStorage.setItem('authToken', userData.token);
+  }
     // Call parent with user data (no need for localStorage)
     onLoginSuccess?.(userData);
     onClose();

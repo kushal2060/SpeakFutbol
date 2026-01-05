@@ -41,6 +41,7 @@ export interface Event {
 // const API_BASE_URL = 'http://localhost:8000/api';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
+
 interface EventData {
   title: string;
   description: string;
@@ -73,17 +74,12 @@ class ApiService {
     'Content-Type': 'application/json',
   };
 
-  // Get CSRF token from cookie
-  const csrfToken = document.cookie
-    .split('; ')
-    .find(row => row.startsWith('csrftoken='))
-    ?.split('=')[1];
-
-  if (csrfToken) {
-    headers['X-CSRFToken'] = csrfToken;
+  // Include token from localStorage
+  const token = localStorage.getItem('authToken');
+  if (token) {
+    headers['Authorization'] = `Token ${token}`;
   }
 
-  // Remove token auth - we're using session cookies only
   return headers;
 }
 
@@ -238,4 +234,4 @@ class ApiService {
 }
 }
 
-export default ApiService; 
+export default ApiService;

@@ -4,6 +4,7 @@ from rest_framework import status
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth import get_user_model, login
 import requests
+from rest_framework.authtoken.models import Token
 
 User = get_user_model()
 
@@ -77,9 +78,15 @@ class GoogleLoginView(APIView):
             # Log the user in (creates session)
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             
-            # Return user data
+            # Get or create token
+            token, _ = Token.objects.get_or_create(user=user)
+            
+            # Return token and user data
             from users.serializers import UserSerializer
-            return Response(UserSerializer(user).data)
+            return Response({
+                'token': token.key,
+                'user': UserSerializer(user).data
+            })
             
         except Exception as e:
             return Response(

@@ -71,7 +71,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
     setIsLoading(true);
     try {
       // Send token to Django backend
-      const response = await fetch('http://localhost:8000/api/users/google-login/', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/users/google-login/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -87,7 +87,9 @@ const SignInModal: React.FC<SignInModalProps> = ({
 
       const userData = await response.json();
       console.log('Google signup successful:', userData);
-
+      if (userData.token) {
+        localStorage.setItem('authToken', userData.token);
+      }
       // Call parent with user data (session cookies handle auth)
       onSignupSuccess?.(userData);
       onClose();
