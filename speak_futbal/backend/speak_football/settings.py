@@ -186,22 +186,24 @@ CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 # CSRF settings
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_HTTPONLY = False  # Set to False to allow JavaScript to read the cookie
-# CSRF_TRUSTED_ORIGINS = [
-#     "http://localhost:3000",  # Next.js development server
-# ]
-CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
+CSRF_COOKIE_HTTPONLY = False  # Important: Frontend needs to read it
 CSRF_USE_SESSIONS = False
-CSRF_COOKIE_NAME = 'csrftoken'
 
 # Session settings
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_HTTPONLY = True
+
+# For Chrome's partitioned cookies requirement
+if not DEBUG:
+    CSRF_COOKIE_SAMESITE = 'None'
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SAMESITE = 'None'
+    SESSION_COOKIE_SECURE = True
 
 # REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',  
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
