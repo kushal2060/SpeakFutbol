@@ -1,8 +1,8 @@
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.contrib.auth import authenticate, login, logout
- 
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 from .serializers import UserSerializer, UserCreateSerializer
@@ -24,15 +24,14 @@ class UserCreateView(APIView):
         serializer = UserCreateSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            # Authenticate the newly created user 
-            authenticated_user = authenticate(
-                request, 
-                username=user.username, 
-                password=request.data.get('password')
-            )
-            if authenticated_user:
-                login(request, authenticated_user)
-            return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+            
+            # Create token
+            token, _ = Token.objects.get_or_create(user=user)
+            
+            return Response({
+                'token': token.key,
+                'user': UserSerializer(user).data
+            }, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -56,12 +55,16 @@ class LoginView(APIView):
         username = request.data.get('username')
         password = request.data.get('password')
        
-        user = authenticate(request,username=username, password=password)
+        user = authenticate(request, username=username, password=password)
         
         if user:
-            login(request, user)
-            serializer = UserSerializer(user)
-            return Response(serializer.data)
+            # Get or create token
+            token, _ = Token.objects.get_or_create(user=user)
+            
+            return Response({
+                'token': token.key,
+                'user': UserSerializer(user).data
+            })
         return Response(
             {'error': 'Invalid credentials'}, 
             status=status.HTTP_401_UNAUTHORIZED
@@ -71,5 +74,9 @@ class LogoutView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
-        logout(request)
+        # Delete the user's token
+        try:
+            request.user.auth_token.delete()
+        except:
+            pass
         return Response(status=status.HTTP_204_NO_CONTENT)
