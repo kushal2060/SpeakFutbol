@@ -129,13 +129,17 @@ class ApiService {
         method: 'POST',
         body: JSON.stringify(credentials),
       });
-      return response.json();
+      const data = await response.json();
+      
+      // Store token
+      if (data.token) {
+        localStorage.setItem('authToken', data.token);
+      }
+      
+      return data.user;
     } catch (error) {
       console.error('Login failed:', error);
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
-      throw new Error('Failed to login');
+      throw error;
     }
   }
 
@@ -144,16 +148,23 @@ class ApiService {
       method: 'POST',
       body: JSON.stringify(data),
     });
-     
-    return response.json();
+    
+    const result = await response.json();
+    
+    // Store token
+    if (result.token) {
+      localStorage.setItem('authToken', result.token);
+    }
+    
+    return result.user;
   }
 
   static async logout(): Promise<void> {
     await this.fetchWithAuth(`${API_BASE_URL}/users/logout/`, {
       method: 'POST',
     });
-    // Clear any local storage or state after logout
-    localStorage.removeItem('user');
+    // Clear token
+    localStorage.removeItem('authToken');
   }
 
   static async getCurrentUser(): Promise<User | null> {

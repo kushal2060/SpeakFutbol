@@ -72,7 +72,7 @@ const LogInModal: React.FC<LogInModalProps> = ({
     localStorage.setItem('authToken', userData.token);
   }
     // Call parent with user data (no need for localStorage)
-    onLoginSuccess?.(userData);
+    onLoginSuccess?.(userData.user || userData);
     onClose();
   } catch (err) {
     console.error('Google login error:', err);
