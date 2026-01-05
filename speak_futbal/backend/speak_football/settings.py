@@ -186,8 +186,9 @@ CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 # CSRF settings
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_HTTPONLY = False  # Important: Frontend needs to read it
+CSRF_COOKIE_HTTPONLY = False
 CSRF_USE_SESSIONS = False
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')  # ADD THIS LINE
 
 # Session settings
 SESSION_COOKIE_SECURE = True
